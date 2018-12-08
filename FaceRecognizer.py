@@ -19,6 +19,8 @@ class BaiduFaceRecognizer(FaceRecognizer):
         
     def run(self, image):
         print('Recognizing ...')
-        image64 = base64.b64encode(image)
-        ret = self._client.detect(image64, "BASE64", None)
-        return ret
+        image64 = base64.b64encode(image['frame'])
+        ret = self._client.search(image64, "BASE64", baiduAI['GROUP'])
+        print(ret)
+
+        return ret['result']['user_list'][0]['user_id'] if ret['error_msg'] == 'SUCCESS' else None

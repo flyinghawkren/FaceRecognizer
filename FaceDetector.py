@@ -26,16 +26,19 @@ class BaiduFaceDetector(FaceDetector):
         cv2.imwrite('./01.png', image)
 
         ret = {}
+        img = None
         with open('./01.png', 'rb') as fp:
             img = fp.read()
             image64 = base64.b64encode(img)
-
-            print('Detecting ...')
             ret = self._client.detect(image64, "BASE64")
             print(ret)
-        
+
         return {
-            'frame': image,
-            'result': ret['error_msg'] if ret else None,
-            'location': ret['result']['face_list'][0]['location'] if ret['error_msg'] == 'Success' else None
+            'frame': img,
+            'error_msg': ret['error_msg'],
+            'location': ret['result']['face_list'][0]['location'] if self.successDetectFace(ret) else None
         }
+
+    @staticmethod
+    def successDetectFace(ret):
+        return ret and (ret['error_msg'] == 'SUCCESS')

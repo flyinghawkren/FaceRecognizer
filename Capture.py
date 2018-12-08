@@ -8,6 +8,7 @@ class VideoCapture(object):
     def __init__(self, subject):
         super(VideoCapture, self).__init__()
         self._subject = subject
+        self._result = None
 
     def run(self):
         cap = cv2.VideoCapture(0)
@@ -27,6 +28,9 @@ class VideoCapture(object):
                 frameIdx = 0
                 self._subject.on_next(frame)
 
+            if self._result and len(self._result) > 0:
+                cv2.putText(frame, self._result, (10,400), cv2.FONT_HERSHEY_PLAIN, 4, (255,255,255))
+
             # Display the resulting frame
             cv2.imshow('frame', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -35,4 +39,7 @@ class VideoCapture(object):
         # When everything done, release the capture
         cap.release()
         cv2.destroyAllWindows()
+
+    def setResult(self, result):
+        self._result = result
         
